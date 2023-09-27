@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mental Health Chatbot</title>
+  <link rel="shortcut icon" href="static/img/bot.jpg" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/styles/style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+  <!-- partial:index.partial.html -->
+  <section class="msger">
+    <header class="msger-header">
+      <div class="msger-header-title">
+        Developing Conversational AI Chatbot for Mindfulness 
+      </div>
+    </header>
+    <main class="msger-chat">
+      <div class="msg left-msg">
+        <div class="msg-img" style="background-image: url(static/img/bot.jpg)"></div>
+        <div class="msg-bubble">
+          <div class="msg-info">
+            <div class="msg-info-name">Mental Health ChatBot</div>
+          
+            <script>
+              function updateTime() {
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                var seconds = now.getSeconds();
+                var timeString = hours + ':' + minutes;
+                document.getElementById('clock').textContent = timeString;
+              }
+              setInterval(updateTime, 1000);
+            </script>
+            <div class="msg-info-time"><time id="clock"></time></div>
+          </div>
+          <div class="msg-text">
+            Welcome to the Mental Health Chatbot, a safe and supportive space where you can share your thoughts and feelings without fear of judgment.
+          </div>
+        </div>
+      </div>
+    </main>
+    <form class="msger-inputarea">
+      <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
+      <button type="submit" class="msger-send-btn">Send</button>
+    </form>
+    <button type="button" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+  </section>
+  <!-- partial -->
+  <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+  <script>
+    const msgerForm = get(".msger-inputarea");
+    const msgerInput = get(".msger-input");
+    const msgerChat = get(".msger-chat");
+    // Icons made by Freepik from www.flaticon.com
+    const BOT_IMG = "static/img/bot.jpg";
+    const PERSON_IMG = "static/img/person.png";
+    const BOT_NAME = "    Chat Bot";
+    const PERSON_NAME = "You";
+    msgerForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const msgText = msgerInput.value;
+      if (!msgText) return;
+      appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+      msgerInput.value = "";
+      botResponse(msgText);
+    });
+    function appendMessage(name, img, side, text) {
+      //   Simple solution for small apps
+      const msgHTML = `
+<div class="msg ${side}-msg">
+  <div class="msg-img" style="background-image: url(${img})"></div>
+  <div class="msg-bubble">
+    <div class="msg-info">
+      <div class="msg-info-name">${name}</div>
+      <div class="msg-info-time">${formatDate(new Date())}</div>
+    </div>
+    <div class="msg-text">${text}</div>
+  </div>
+</div>
+`;
+      msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+      msgerChat.scrollTop += 500;
+    }
+    function botResponse(rawText) {
+      // Bot Response
+      $.get("/get", { msg: rawText }).done(function (data) {
+        console.log(rawText);
+        console.log(data);
+        const msgText = data;
+        appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
+        speak(msgText); // Cevabı seslendir
+      });
+    }
+    function speak(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      speechSynthesis.speak(utterance);
+    }
+    // Utils
+    function get(selector, root = document) {
+      return root.querySelector(selector);
+    }
+    function formatDate(date) {
+      const h = "0" + date.getHours();
+      const m = "0" + date.getMinutes();
+      return `${h.slice(-2)}:${m.slice(-2)}`;
+    }
+  </script>
+  <script>
+    // Diğer kodlar...
+  
+    // Sesli komut düğmesini seçin
+    const voiceBtn = get("#voiceBtn");
+  
+    // Sesli komut düğmesine tıklanıldığında
+    voiceBtn.addEventListener("click", () => {
+      // Sesli komut almak için tanıma başlat
+      recognition.start();
+    });
+  
+    // Ses tanıma nesnesini oluştur
+    const recognition = new (window.SpeechRecognition ||
+      window.webkitSpeechRecognition ||
+      window.mozSpeechRecognition ||
+      window.msSpeechRecognition)();
+  
+    // Tanıma ayarlarını yapılandır
+    recognition.lang = "en"; // Dil seçeneğini ayarlayabilirsiniz
+  
+    // Tanıma sonuçları geldiğinde
+    recognition.onresult = function (event) {
+      const transcript = event.results[0][0].transcript;
+      msgerInput.value = transcript;
+      msgerForm.dispatchEvent(new Event("submit")); // Formu gönder
+    };
+  
+    // Tanıma hatası oluştuğunda
+    recognition.onerror = function (event) {
+      console.error("Speech recognition error:", event.error);
+    };
+  </script>
+</body>
+</html>
