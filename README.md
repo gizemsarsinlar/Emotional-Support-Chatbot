@@ -1,6 +1,6 @@
-# Chatbot NLP
+# Emotional Support Chatbot
 
-This repository contains code and resources for building an intelligent chatbot for human psychology.
+One of my graduation projects, this repository contains code and resources to create an intelligent chatbot geared towards human psychology.
 
 ## Project Overview
 
