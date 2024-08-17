@@ -21,3 +21,13 @@ This project involves creating a chatbot that can interact with customers and an
 - **`app.py`**: Flask application to serve the chatbot and interact with users through a web interface.
 - **`templates/index.html`**: Basic HTML template for the chatbot web interface.
 
+- ## Demo
+
+Here are some screenshots demonstrating the chatbot in action:
+
+![Demo Screenshot 1](demo1.jpeg)
+*Figure 1: Chatbot Interface 1
+
+![Demo Screenshot 2](demo2.jpeg)
+*Figure 2: Chatbot Interface 2
+
